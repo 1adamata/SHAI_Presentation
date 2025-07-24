@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивная презентация платформы SHAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Professional Blue Accent -->
+    <!-- Application Structure Plan: A narrative-driven, single-page application guiding the user from Problem to Solution, Proof, and Action. The structure prioritizes storytelling for a C-level audience. Key interactions include a dynamic chart for case study exploration and tabs for use cases, designed to make complex information digestible and engaging. This structure was chosen over a simple slide-by-slide replica to create a more compelling and intuitive user journey that highlights the platform's value proposition. -->
+    <!-- Visualization & Content Choices: 
+    - Problem Stats (20%, 84%): Goal: Inform. Method: Large typographic display with icons. Justification: High impact, immediately grabs attention.
+    - Case Study Performance: Goal: Compare. Method: Interactive horizontal bar chart (Chart.js) with a logarithmic scale. Interaction: User selects a case study to update the chart and descriptive text. Justification: A logarithmic scale is essential to visualize the vast differences in time savings (from months to seconds) accurately and without distortion. Interactivity allows the user to drill down into specific proof points. Library: Chart.js on Canvas.
+    - Deployment Models: Goal: Compare. Method: HTML/Tailwind table. Justification: Provides a clear, side-by-side comparison of complex options, ideal for strategic decision-making.
+    - Use Cases: Goal: Organize. Method: Tabbed interface. Interaction: Click to reveal content for different departments. Justification: Prevents information overload by chunking related content logically.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .tab-button.active {
+            border-color: #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">shai</div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#problem" class="text-gray-600 hover:text-blue-600">Проблема</a>
+                <a href="#solution" class="text-gray-600 hover:text-blue-600">Решение</a>
+                <a href="#impact" class="text-gray-600 hover:text-blue-600">Результаты</a>
+                <a href="#use-cases" class="text-gray-600 hover:text-blue-600">Применение</a>
+                <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Запросить демо</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="bg-white py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
+                    SHAI: Ваша корпоративная ИИ-платформа
+                </h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                    Превратите внутренние данные в конкурентное преимущество. Автоматизируйте рутинные задачи, повышайте точность и сохраняйте полный контроль над информацией.
+                </p>
+                <a href="#contact" class="mt-8 inline-block bg-blue-600 text-white text-lg font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition duration-300">Начать ИИ-трансформацию</a>
+            </div>
+        </section>
+
+        <section id="problem" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Скрытые издержки вашего бизнеса</h2>
+                    <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">Современные компании сталкиваются с двумя критическими проблемами, которые напрямую влияют на прибыль и безопасность.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-center fade-in">
+                        <div class="text-blue-600 text-6xl mb-4">⏱️</div>
+                        <h3 class="text-2xl font-bold mb-2">Потеря производительности</h3>
+                        <p class="text-5xl font-bold text-blue-600">20%</p>
+                        <p class="text-gray-600 mt-2">рабочего дня квалифицированных сотрудников уходит на поиск и проверку внутренней информации. <span class="font-semibold">(Источник: McKinsey)</span></p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-center fade-in">
+                        <div class="text-red-500 text-6xl mb-4">🔒</div>
+                        <h3 class="text-2xl font-bold mb-2">Риски безопасности</h3>
+                        <p class="text-5xl font-bold text-red-500">84%</p>
+                        <p class="text-gray-600 mt-2">компаний опасаются утечек конфиденциальных данных при использовании сотрудниками публичных ИИ-сервисов. <span class="font-semibold">(Источник: Cisco)</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="bg-white py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="fade-in">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Платформа SHAI: Прямой ответ на вызовы</h2>
+                        <p class="mt-4 text-lg text-gray-700">SHAI — это не просто чат-бот. Это безопасная no-code ИИ-платформа, которая создает специализированных ИИ-агентов, обученных **исключительно на ваших внутренних данных**. Это гарантирует, что ответы всегда релевантны, точны и конфиденциальны.</p>
+                        <div class="mt-6 space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-6 w-6 text-blue-600 mt-1">✓</div>
+                                <p class="ml-3 text-gray-700"><span class="font-semibold">Точность >90%:</span> Исключает "галлюцинации", так как работает только с проверенными корпоративными источниками.</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-6 w-6 text-blue-600 mt-1">✓</div>
+                                <p class="ml-3 text-gray-700"><span class="font-semibold">Полный контроль данных:</span> Гибкие модели развертывания (включая On-Premise) обеспечивают соответствие самым строгим требованиям безопасности и суверенитета данных.</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-6 w-6 text-blue-600 mt-1">✓</div>
+                                <p class="ml-3 text-gray-700"><span class="font-semibold">Демократизация ИИ:</span> No-code интерфейс позволяет любому отделу (HR, юристы, финансы) создавать своих ИИ-ассистентов без помощи ИТ.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-100 p-8 rounded-xl fade-in">
+                         <div class="flow-root">
+                            <div class="text-center p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                                <p class="font-bold text-gray-800">ВАШИ ВНУТРЕННИЕ ДАННЫЕ</p>
+                                <p class="text-sm text-gray-500">(Документы, Базы данных, CRM)</p>
+                            </div>
+                            <div class="flex justify-center my-4">
+                                <div class="text-3xl">↓</div>
+                            </div>
+                            <div class="text-center p-6 bg-blue-600 text-white rounded-xl shadow-lg">
+                                <p class="font-bold text-2xl">shai</p>
+                                <p class="text-sm">Мультиагентная ИИ-платформа</p>
+                            </div>
+                            <div class="flex justify-center my-4">
+                               <div class="text-3xl">↓</div>
+                            </div>
+                            <div class="text-center p-4 border-2 border-solid border-green-500 rounded-lg bg-green-50">
+                                <p class="font-bold text-green-800">БЕЗОПАСНЫЕ И ТОЧНЫЕ ОТВЕТЫ</p>
+                                <p class="text-sm text-green-600">Для сотрудников и руководства</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Измеримые результаты, а не обещания</h2>
+                    <p class="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">Платформа SHAI демонстрирует экспоненциальный рост эффективности у ведущих компаний. Выберите кейс, чтобы увидеть реальные данные.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg fade-in">
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="case-study-buttons">
+                    </div>
+                    <div class="grid md:grid-cols-5 gap-8 items-center">
+                        <div class="md:col-span-3">
+                            <div class="chart-container">
+                                <canvas id="impactChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <h3 id="case-study-title" class="text-2xl font-bold text-gray-800"></h3>
+                            <p id="case-study-description" class="mt-2 text-gray-600"></p>
+                            <div id="case-study-metric" class="mt-4 text-3xl font-bold text-blue-600"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="use-cases" class="bg-white py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Ценность для каждого отдела</h2>
+                    <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">SHAI — это горизонтальная платформа, которая адаптируется под уникальные задачи любого подразделения.</p>
+                </div>
+                <div class="fade-in">
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav class="-mb-px flex flex-wrap justify-center gap-4 md:gap-6" id="use-case-tabs">
+                        </nav>
+                    </div>
+                    <div id="use-case-content" class="bg-gray-50 p-8 rounded-lg min-h-[200px]">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="deployment" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Развертывание, отвечающее вашим требованиям</h2>
+                    <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">Выберите модель, которая идеально соответствует вашей ИТ-стратегии и политикам безопасности.</p>
+                </div>
+                <div class="overflow-x-auto fade-in">
+                    <div class="bg-white rounded-xl shadow-lg p-4 min-w-[800px]">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="p-4 text-lg font-semibold">Характеристика</th>
+                                    <th class="p-4 text-lg font-semibold">SaaS</th>
+                                    <th class="p-4 text-lg font-semibold">Private Cloud</th>
+                                    <th class="p-4 text-lg font-semibold">On-Premise</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-4 font-medium">Контроль данных</td>
+                                    <td class="p-4">Умеренный</td>
+                                    <td class="p-4 text-blue-600 font-semibold">Высокий</td>
+                                    <td class="p-4 text-green-600 font-bold">Абсолютный</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-4 font-medium">Уровень безопасности</td>
+                                    <td class="p-4">Высокий</td>
+                                    <td class="p-4 text-blue-600 font-semibold">Очень высокий</td>
+                                    <td class="p-4 text-green-600 font-bold">Максимальный (Air-gapped)</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-4 font-medium">Сложность внедрения</td>
+                                    <td class="p-4 text-green-600 font-bold">Низкая</td>
+                                    <td class="p-4">Средняя</td>
+                                    <td class="p-4">Высокая</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-medium">Идеально для</td>
+                                    <td class="p-4">Быстрых пилотов и отделов без ИТ-поддержки</td>
+                                    <td class="p-4">Компаний со стратегией "cloud-first" и требованием к изоляции данных</td>
+                                    <td class="p-4">Гос. сектора, банков, R&D с максимальными требованиями к безопасности</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="bg-blue-700 text-white py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold">Готовы сделать первый шаг?</h2>
+                <p class="mt-4 text-lg text-blue-200 max-w-2xl mx-auto">Предлагаем простой и прозрачный путь для оценки возможностей SHAI на ваших реальных задачах. Никаких долгосрочных обязательств.</p>
+                <div class="mt-10 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
+                    <div class="bg-blue-800 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold">Этап 1: Демо-сессия</h3>
+                        <p class="mt-2 text-blue-200">Бесплатная интерактивная демонстрация платформы на одном из ваших кейсов. Мы покажем, как SHAI может работать с вашими данными.</p>
+                        <p class="mt-4 font-bold text-xl">Срок: 1-2 часа</p>
+                    </div>
+                    <div class="bg-blue-800 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold">Этап 2: Пилотный проект</h3>
+                        <p class="mt-2 text-blue-200">Создание полнофункционального ИИ-агента для решения одной конкретной задачи. Вы сможете измерить производительность по заранее определенным KPI.</p>
+                         <p class="mt-4 font-bold text-xl">Срок: 14 дней</p>
+                    </div>
+                </div>
+                 <a href="mailto:sales@shai.pro?subject=Запрос на демонстрацию SHAI" class="mt-12 inline-block bg-white text-blue-600 text-lg font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-300">Запросить бесплатное демо</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 SHAI. Все права защищены.</p>
+            <p class="text-gray-400 mt-2">Интерактивная презентация для стратегической оценки.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const caseStudies = [
+                {
+                    id: 'galvani',
+                    name: 'Galvani Bioelectronics',
+                    before: 2160, 
+                    after: 1,
+                    unit: 'часов',
+                    description: 'Задача: Ручная проверка 200 стандартных операционных процедур (SOP) на соответствие стандартам ISO/FDA.',
+                    metric: 'Сокращение времени более чем на 99.9%'
+                },
+                {
+                    id: 'samruk',
+                    name: 'Самрук-Қазына',
+                    before: 48, 
+                    after: 2,
+                    unit: 'часов',
+                    description: 'Задача: Обработка ~7000 ежегодных жалоб поставщиков со ссылками на более чем 100 законов и НПА.',
+                    metric: 'Ускорение в 24 раза, снижение ошибок на 90%'
+                },
+                {
+                    id: 'avi',
+                    name: 'AVI Capital',
+                    before: 168,
+                    after: 4,
+                    unit: 'часов',
+                    description: 'Задача: Проведение инвестиционного анализа при ограниченных ресурсах аналитиков.',
+                    metric: 'Ускорение в 42 раза'
+                },
+                {
+                    id: 'karlskrona',
+                    name: 'Karlskrona',
+                    before: 2.5, 
+                    after: 0.0028, 
+                    unit: 'часов',
+                    description: 'Задача: Проверка технической документации на соответствие стандартам ISO и API.',
+                    metric: 'Ускорение более чем в 700 раз'
+                }
+            ];
+
+            const useCases = [
+                {
+                    name: 'Продажи и Клиенты',
+                    content: 'Генерация коммерческих предложений, подбор продуктов под нужды клиента, интеграция с CRM, круглосуточный чат-бот для поддержки и интеллектуальная сортировка обращений.'
+                },
+                {
+                    name: 'Финансы и Инвестиции',
+                    content: 'Анализ рынка, генерация инвестиционных обзоров, автоматизация клиентских запросов, анализ портфелей, консолидация финансовых отчетов и автоматический анализ отклонений бюджета.'
+                },
+                {
+                    name: 'Гос. сектор и Закупки',
+                    content: 'Автоматические ответы на основе внутренних регламентов, структурирование баз знаний, аналитика процессов, обработка жалоб и проверка тендерной документации на соответствие НПА.'
+                },
+                {
+                    name: 'Юриспруденция и HR',
+                    content: 'Проверка договоров на соответствие политикам, подготовка проектов ответов, ответы на вопросы сотрудников о льготах, ИИ-онбординг для новых сотрудников и оптимизация обучения.'
+                }
+            ];
+
+            const impactChartCtx = document.getElementById('impactChart').getContext('2d');
+            let impactChart;
+
+            function createChart(data) {
+                if (impactChart) {
+                    impactChart.destroy();
+                }
+                impactChart = new Chart(impactChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['До SHAI', 'После SHAI'],
+                        datasets: [{
+                            label: `Время выполнения (${data.unit})`,
+                            data: [data.before, data.after],
+                            backgroundColor: [
+                                'rgba(239, 68, 68, 0.6)',
+                                'rgba(59, 130, 246, 0.6)'
+                            ],
+                            borderColor: [
+                                'rgba(239, 68, 68, 1)',
+                                'rgba(59, 130, 246, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'logarithmic',
+                                title: {
+                                    display: true,
+                                    text: `Время выполнения (${data.unit}, логарифмическая шкала)`,
+                                    font: { size: 14 }
+                                },
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        if (value === 1000000 || value === 1000 || value === 1 || value === 0.01 || value === 0.001) {
+                                            return value;
+                                        }
+                                    }
+                                }
+                            },
+                             y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.x !== null) {
+                                            const value = context.parsed.x;
+                                            let displayValue;
+                                            if (value >= 1) {
+                                                displayValue = Math.round(value);
+                                            } else {
+                                                displayValue = parseFloat(value.toPrecision(1));
+                                            }
+                                            label += `${displayValue} ${data.unit}`;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateCaseStudy(caseId) {
+                const caseData = caseStudies.find(c => c.id === caseId);
+                if (!caseData) return;
+
+                document.getElementById('case-study-title').textContent = caseData.name;
+                document.getElementById('case-study-description').textContent = caseData.description;
+                document.getElementById('case-study-metric').textContent = caseData.metric;
+                createChart(caseData);
+
+                document.querySelectorAll('#case-study-buttons button').forEach(btn => {
+                    btn.classList.toggle('bg-blue-600', btn.dataset.caseId === caseId);
+                    btn.classList.toggle('text-white', btn.dataset.caseId === caseId);
+                    btn.classList.toggle('bg-gray-200', btn.dataset.caseId !== caseId);
+                    btn.classList.toggle('text-gray-700', btn.dataset.caseId !== caseId);
+                });
+            }
+
+            const buttonsContainer = document.getElementById('case-study-buttons');
+            caseStudies.forEach(study => {
+                const button = document.createElement('button');
+                button.textContent = study.name;
+                button.dataset.caseId = study.id;
+                button.className = 'px-4 py-2 rounded-lg font-medium transition duration-200';
+                button.addEventListener('click', () => updateCaseStudy(study.id));
+                buttonsContainer.appendChild(button);
+            });
+            
+            updateCaseStudy(caseStudies[0].id);
+
+            const tabsContainer = document.getElementById('use-case-tabs');
+            const contentContainer = document.getElementById('use-case-content');
+
+            function updateUseCaseContent(caseName) {
+                const useCase = useCases.find(uc => uc.name === caseName);
+                if (!useCase) return;
+
+                contentContainer.innerHTML = `<p class="text-lg text-gray-700">${useCase.content}</p>`;
+                
+                document.querySelectorAll('#use-case-tabs button').forEach(btn => {
+                    btn.classList.toggle('active', btn.textContent === caseName);
+                });
+            }
+
+            useCases.forEach(uc => {
+                const button = document.createElement('button');
+                button.textContent = uc.name;
+                button.className = 'tab-button text-gray-500 whitespace-nowrap border-b-2 border-transparent py-2 px-1 text-base font-medium hover:border-gray-300';
+                button.addEventListener('click', () => updateUseCaseContent(uc.name));
+                tabsContainer.appendChild(button);
+            });
+
+            updateUseCaseContent(useCases[0].name);
+
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = {
+                threshold: 0.2,
+                rootMargin: "0px 0px -50px 0px"
+            };
+            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('visible');
+                        appearOnScroll.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+        });
+    </script>
+</body>
+</html>
